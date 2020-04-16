@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>时钟</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+        li{
+            list-style: none;
+        }
+        body{
+            background: #232425;
+        }
+        #box{
+            width: 360px;
+            height: 360px;
+            border: 10px solid #ccc;
+            margin: 100px auto 0;
+            border-radius: 50%;
+            box-shadow: inset 0 0 13px 2px #868484;
+            background: #E4E4E4;
+            position: relative;
+        }
+        #box .arc{
+            position: absolute;
+            left: calc( 360px/2 - 50px/2 );
+            top: calc( 360px/2 - 50px/2 );
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.2);
+        }
+        #box .arc>div{
+            position: absolute;
+            left: calc( 50px/2 - 20px/2 );
+            top: calc( 50px/2 - 20px/2 );
+            border-radius: 50%;
+        }
+        #box .arc>div{
+            width: 20px;
+            height: 20px;
+            background: #3A3A3A;
+
+        }
+        /* 时分秒默认要指向 12点钟的方向 */
+        #box .arc>div>div{
+            position: absolute;
+            bottom:0;
+            border-radius: 0 0 5px 5px;
+        }
+        #hour div{
+            left: calc( 20px/2 - 12px/2 );
+            width: 12px;
+            height: 115px;
+            background: #888888;
+        }
+        #hour div::after{
+            position: absolute;
+            top: -11px;
+            content: '';
+            width: 0;
+            height: 0;
+            -border: 6px solid blue;
+            -border-color: transparent transparent blue transparent;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 12px solid #888888;
+        }
+        #min div{
+            left: calc( 20px/2 - 8px/2 );
+            width: 8px;
+            height: 135px;
+            background: #888888;
+        }
+        #min div::after{
+            position: absolute;
+            top: -7px;
+            content: '';
+            width: 0;
+            height: 0;
+
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 8px solid #888888;
+        }
+        #sec div{
+            left: calc( 20px/2 - 4px/2 );
+            bottom:-22px !important;
+            width: 4px;
+            height: 180px;
+            background: #3A3A3A;
+            border-radius: 5px !important; ;
+        }
+        #ul{
+            position: absolute;
+            left: calc( 360px/2 - 340px/2 );
+            top: calc( 360px/2 - 340px/2 );
+            width: 340px;
+            height: 340px;
+            border: 1px solid #9fa1a2;
+            border-radius: 50%;
+        }
+        #ul li{
+            position: absolute;
+            left: calc( 340px/2 - 2px/2 );
+            width: 2px;
+            height: 6px;
+            transform-origin: center 170px;
+            background: #9fa1a2;
+            border-radius: 5px;
+        }
+ /*       #ul li:nth-child(1){
+            transform: rotate(0deg);
+        }
+        #ul li:nth-child(2){
+            transform: rotate(30deg);
+        }
+        #ul li:nth-child(3){
+            transform: rotate(60deg);
+        }
+        #ul li:nth-child(4){
+            transform: rotate(90deg);
+        }*/
+        #num{
+            position: absolute;
+            left: calc( 360px/2 - 280px/2 );
+            top: calc( 360px/2 - 280px/2 );
+            width: 280px;
+            height: 280px;
+            border: 1px solid #9fa1a2;
+            border-radius: 50%;
+        }
+        #num li{
+            position: absolute;
+            left: calc( 280px/2 - 20px/2 );
+            width: 20px;
+            height: 20px;
+            transform-origin: center 140px;
+            -background: #9fa1a2;
+            -border-radius: 5px;
+            text-align: center;
+            font: 12px/20px 'Microsoft Yahei';
+            color: #5E5F60;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div class="arc">
+            <div id="hour">
+                <div></div>
+            </div>
+            <div id="min">
+                <div></div>
+            </div>
+            <div id="sec">
+                <div></div>
+            </div>
+        </div>
+
+        <ul id="ul"></ul>
+        <ol id="num"></ol>
+    </div>
+    <script>
+        
+        getTime();
+        setInterval(getTime,1000);
+
+
+        createLi();
+        function createLi() {
+            var str = '';
+            var strNum = '';
+            for ( var i=0;i<60;i++ ){
+                str += '<li style="transform: rotate('+6*i+'deg)"></li>';
+
+            }
+            ul.innerHTML = str;
+
+            var aLi = ul.querySelectorAll('li');
+            for( var i=0;i<12;i++){
+                aLi[i*5]['style']['background'] = '#5E5F60';
+                aLi[i*5]['style']['width'] = '4px';
+                aLi[i*5]['style']['height'] = '24px';
+                aLi[i*5]['style']['left'] = 'calc( 340px/2 - 4px/2 )';
+                strNum += '<li style="transform: rotate('+30*i+'deg)">'+(i?i:12)+'</li>';
+            }
+            num.innerHTML = strNum;
+        }
+        
+        function getTime() {
+            var oDate = new Date();
+            var s = oDate.getSeconds();
+            var m = oDate.getMinutes() + (s/60);
+            var h = oDate.getHours() + (m/60);
+
+            // 时分钞所要走的 刻度
+            // 时 30  分 6 秒 6
+            hour['style']['transform'] = 'rotate('+h*30+'deg)';
+            min['style']['transform'] = 'rotate('+m*6+'deg)';
+            sec['style']['transform'] = 'rotate('+s*6+'deg)';
+        }
+        
+    </script>
+</body>
+</html>
